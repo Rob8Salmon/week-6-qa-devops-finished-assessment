@@ -1,5 +1,4 @@
-
-import { Builder, Capabilities, By } from "selenium-webdriver"
+import { Builder, Capabilities, By, Key } from "selenium-webdriver"
 
 require('chromedriver')
 
@@ -13,30 +12,45 @@ afterAll(async () => {
     driver.quit()
 })
 
-describe('duel-duo tests',() => {
+test('Title shows up when page loads', async () => {
+    const title = await driver.findElement(By.id('title'))
+    const displayed = await title.isDisplayed()
+    await driver.sleep(2000)
+    expect(displayed).toBe(true)
+})
 
-    test('Title shows up when page loads', async () => {
-        const title = await driver.findElement(By.id('title'))
-        const displayed = await title.isDisplayed()
-        expect(displayed).toBe(true)
-    })
+test('Add to duo button displays player-duo', async () => {
+    const drawBtn = await driver.findElement(By.id('draw'))
+    await drawBtn.click()
+    await driver.sleep(2000)    
+    const addToDuoBtn = await driver.findElement(By.className('bot-btn'))
+    await addToDuoBtn.click()
+    await driver.sleep(2000)
+    // const playerOnDuo = await driver.findElement(By.id('player-duo'))
+    // const displayed = playerOnDuo.isDisplayed()
+    // await driver.sleep(2000)
+    // expect(displayed).toBe(true)
+    const playerOnDuo = await driver.findElement(By.xpath('//*[@id="player-duo"]/div'))
+    await driver.sleep(2000)
+    expect(playerOnDuo).toBeTruthy;
+})
 
-    test('clicking draw btn displays the bots',async() => {
-        await driver.findElement(By.id('draw')).click()
-        await driver.sleep(3000)
-        const choicesDiv = await driver.findElement(By.id('choices'))
-        const displayed = await choicesDiv.isDisplayed()//return true or false
-        console.log(displayed)
-        expect(displayed).toBe(true)
-        
-    })
-    test('clicking add-to-duo displays bot in a new div',async() => {
-        await driver.findElement(By.id('draw')).click()
-        await driver.sleep(4000)
-        await driver.findElement(By.xpath('(//button[text() = "Add to Duo"])[1]')).click()
-        const playerDivDuo = await driver.findElement(By.id('player-duo'))
-        const displayed = playerDivDuo.isDisplayed()
-        expect(displayed).toBe(true)
-    })
+test('Remove button working', async () => {
+    const drawBtn = await driver.findElement(By.id('draw'))
+    await drawBtn.click()
+    await driver.sleep(2000)    
+    const addToDuoBtn = await driver.findElement(By.className('bot-btn'))
+    await addToDuoBtn.click()
+    await driver.sleep(2000)
 
+    const removeBtn = await driver.findElement(By.xpath("//button[@id='remove']"))
+    const playerOnDuo = await driver.findElement(By.xpath('//*[@id="player-duo"]/div'))
+
+    await removeBtn.click();
+    await driver.sleep(2000)
+
+
+    //*[@id="player-duo"]/div
+    await driver.sleep(2000)
+    expect(playerOnDuo).toBeNull;
 })
